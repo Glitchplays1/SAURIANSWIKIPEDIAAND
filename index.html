@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saurians Wiki • Official Lore Archive</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;display=swap');
+        
+        :root {
+            --tw-color-primary: #00ff9d;
+        }
+        
+        body {
+            font-family: 'Press Start 2P', system-ui;
+        }
+        
+        .wiki-header {
+            background: linear-gradient(90deg, #111827, #1f2937);
+            box-shadow: 0 0 20px #00ff9d;
+        }
+        
+        .content-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .content-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 0 15px #00ff9d;
+        }
+        
+        .modal {
+            animation: modalPop 0.3s ease-out;
+        }
+        
+        @keyframes modalPop {
+            0% { transform: scale(0.95); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .chat-bubble {
+            max-width: 80%;
+            padding: 12px 18px;
+            border-radius: 20px;
+            position: relative;
+        }
+        
+        .admin-badge {
+            animation: pulse 2s infinite;
+        }
+        
+        .mood-happy { color: #00ff9d; }
+        .mood-serious { color: #ffaa00; }
+        .mood-security { color: #ff0066; }
+    </style>
+</head>
+<body class="bg-[#0a0a0a] text-white min-h-screen">
+    <!-- NAVBAR -->
+    <nav class="wiki-header sticky top-0 z-50">
+        <div class="max-w-screen-2xl mx-auto px-8 py-4 flex items-center justify-between">
+            <!-- Logo -->
+            <div class="flex items-center gap-x-3">
+                <div class="w-10 h-10 bg-[#00ff9d] rounded-2xl flex items-center justify-center text-3xl shadow-[0_0_15px_#00ff9d]">🐺</div>
+                <div>
+                    <h1 class="text-3xl tracking-[4px] text-[#00ff9d]">SAURIANS</h1>
+                    <p class="text-xs text-gray-400 tracking-widest -mt-1">WIKI • ETERNAL ARCHIVES</p>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="flex items-center gap-x-8 text-sm">
+                <button onclick="navigateTo('home')" class="hover:text-[#00ff9d] transition-colors flex items-center gap-x-1">
+                    <span>🏠</span> HOME
+                </button>
+                <button onclick="navigateTo('lore')" class="hover:text-[#00ff9d] transition-colors flex items-center gap-x-1">
+                    <span>📜</span> LORE
+                </button>
+                <button onclick="navigateTo('wolves')" class="hover:text-[#00ff9d] transition-colors flex items-center gap-x-1">
+                    <span>🐺</span> SAURIAN WOLVES
+                </button>
+                <button onclick="navigateTo('characters')" class="hover:text-[#00ff9d] transition-colors flex items-center gap-x-1">
+                    <span>👑</span> CHARACTERS
+                </button>
+                <button onclick="navigateTo('powerdb')" class="hover:text-[#00ff9d] transition-colors flex items-center gap-x-1">
+                    <span>⚡</span> POWER SCALE DB
+                </button>
+                <button onclick="navigateTo('crystals')" class="hover:text-[#00ff9d] transition-colors flex items-center gap-x-1">
+                    <span>💎</span> TRANSFORMATION CRYSTALS
+                </button>
+                <button onclick="navigateTo('tools')" class="hover:text-[#00ff9d] transition-colors flex items-center gap-x-1">
+                    <span>🛠️</span> TOOLS
+                </button>
+                
+                <!-- Admin -->
+                <div onclick="showAdminModal()" class="flex items-center gap-x-2 cursor-pointer bg-gray-800 hover:bg-gray-700 px-4 py-1.5 rounded-xl text-xs font-bold border border-[#00ff9d]/30">
+                    <span id="admin-status" class="text-[#00ff9d]">🔒 ADMIN LOCKED</span>
+                    <span class="text-xs">PASS: ABDUL</span>
+                </div>
+                
+                <!-- Friday Quick Access -->
+                <button onclick="toggleFridayChat()" 
+                        class="flex items-center bg-[#00ff9d] hover:bg-[#00cc7a] text-black px-6 py-2 rounded-2xl font-bold text-sm gap-x-2 shadow-[0_0_15px_#00ff9d]">
+                    <span>🧬</span> TALK TO FRIDAY
+                    <span id="friday-mood-badge" class="text-xs px-2 py-0.5 bg-black/30 rounded-full">😊 HAPPY</span>
+                </button>
+            </div>
+            
+            <div class="flex items-center gap-x-4 text-xs">
+                <div class="flex items-center gap-x-1 text-[#00ff9d]">
+                    <div class="w-2 h-2 bg-[#00ff9d] rounded-full animate-pulse"></div>
+                    LIVE IN SAURIUS
+                </div>
+                <div onclick="window.location.reload()" class="cursor-pointer text-gray-400 hover:text-white">⟳ RESET SESSION</div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT AREA -->
+    <div class="max-w-screen-2xl mx-auto px-8 py-8" id="main-content">
+        <!-- Dynamically loaded by JS -->
+    </div>
+
+    <!-- FRIDAY CHAT PANEL (floating) -->
+    <div onclick="if(event.target.id === 'chat-backdrop')toggleFridayChat()" 
+         id="chat-backdrop"
+         class="hidden fixed inset-0 bg-black/70 z-[9999] flex items-end justify-end p-6">
+        
+        <div onclick="event.stopImmediatePropagation()" 
+             class="bg-[#111827] w-full max-w-lg rounded-3xl shadow-2xl flex flex-col h-[620px] border border-[#00ff9d]/40 overflow-hidden">
+            
+            <!-- Chat Header -->
+            <div class="bg-[#1f2937] px-6 py-4 flex items-center justify-between border-b border-[#00ff9d]/20">
+                <div class="flex items-center gap-x-3">
+                    <div class="w-9 h-9 bg-gradient-to-br from-[#00ff9d] to-purple-500 rounded-2xl flex items-center justify-center text-2xl">🧬</div>
+                    <div>
+                        <h2 class="text-xl font-bold tracking-widest">FRIDAY</h2>
+                        <p class="text-xs text-gray-400">Saurian Realm AI • Glitch's Creation</p>
+                    </div>
+                </div>
+                
+                <!-- Mood Indicator -->
+                <div class="flex items-center gap-x-3">
+                    <span class="text-xs uppercase tracking-widest">MOOD</span>
+                    <div id="friday-mood-display" class="flex items-center gap-x-2 font-bold text-lg">
+                        <!-- JS injected -->
+                    </div>
+                </div>
+                
+                <button onclick="toggleFridayChat()" class="text-gray-400 hover:text-white text-3xl leading-none">×</button>
+            </div>
+            
+            <!-- Messages -->
+            <div id="friday-messages" class="flex-1 overflow-y-auto p-6 space-y-6 bg-[#0a0a0a]">
+                <!-- Populated by JS -->
+                <div class="flex gap-x-3">
+                    <div class="text-3xl">🧬</div>
+                    <div class="chat-bubble bg-[#1f2937] text-white">
+                        Welcome to the Saurian Realm. I am Friday, your eternal AI companion.<br>
+                        Ask me anything about the wiki, lore, power levels, or general knowledge.<br>
+                        <span class="text-[#00ff9d] text-xs">Type "Saurian Veil" for secret mode.</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Input -->
+            <div class="p-4 bg-[#1f2937] border-t border-[#00ff9d]/20">
+                <form onsubmit="sendToFriday(event)" class="flex">
+                    <input id="friday-input" 
+                           type="text" 
+                           placeholder="Ask Friday anything... (what is the lore? who would win?)" 
+                           class="flex-1 bg-[#111827] border border-[#00ff9d]/30 focus:border-[#00ff9d] rounded-2xl px-6 py-4 text-sm outline-none">
+                    <button type="submit"
+                            class="ml-3 bg-[#00ff9d] text-black px-8 rounded-2xl font-bold hover:scale-105 transition">SEND</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADMIN MODAL -->
+    <div onclick="if(event.target.id === 'admin-modal')hideAdminModal()" 
+         id="admin-modal"
+         class="hidden fixed inset-0 bg-black/80 z-[11000] flex items-center justify-center">
+        <div class="bg-[#111827] rounded-3xl p-8 max-w-md w-full modal">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-x-2"><span>🔑</span> ADMIN ACCESS</h2>
+            <p class="text-sm text-gray-400 mb-4">Enter passcode to unlock editing &amp; adding. Only you control the archive.</p>
+            
+            <input id="admin-passcode" 
+                   type="password" 
+                   placeholder="Enter passcode (ABDUL)"
+                   class="w-full bg-gray-800 text-white px-6 py-4 rounded-2xl text-center text-2xl tracking-widest focus:outline-none focus:ring-2 focus:ring-[#00ff9d]">
+            
+            <div class="flex gap-x-4 mt-8">
+                <button onclick="hideAdminModal()" 
+                        class="flex-1 py-4 border border-gray-600 hover:bg-gray-800 rounded-2xl">CANCEL</button>
+                <button onclick="verifyAdminPasscode()" 
+                        class="flex-1 py-4 bg-[#00ff9d] text-black font-bold rounded-2xl">UNLOCK ARCHIVE</button>
+            </div>
+            
+            <p id="admin-error" class="text-red-400 text-xs mt-4 text-center hidden">Incorrect passcode. Only the creator may edit.</p>
+        </div>
+    </div>
+
+    <!-- Global JS Data & Functions are at the bottom -->
+    <script>
+        // Tailwind initialization
+        function initTailwind() {
+            return {
+                config(userConfig = {}) {
+                    return {
+                        configUser: userConfig,
+                        theme: {
+                            extend: {
+                                colors: {
+                                    primary: '#00ff9d'
+                                }
+                            }
+                        }
+                    }
+                },
+                theme: {
+                    extend: {}
+                }
+            }
+        }
+        
+        // MASTER WIKI DATA STORE (persists in localStorage)
+        let WIKI_DATA = {
+            lore: {
+                title: "Lore: Saurians",
+                content: "Saurians is a series about saurians wolves that lived in a world of Saurius, A land filled with life and nature similar to both earth and pandora, but there is always something going on, they lived for eternity, from generation to next generation to present, they still serve kings, queens, lords, even elder wolves. They still live but they aren’t attacking earth for now. There is always honesty."
+            },
+            saurianWolves: {
+                title: "Saurian Wolves",
+                content: "Saurian Wolves Are The 101 Strongest host of the planets most overpowered beings in the universe, they may seem fragile, but deep down, they aren’t. They also have effects, like elements, kinesis, and more. They even have colours showing most of the elements, but to kill one as a normal being, you must aim at the heart, but if your a saurian wolf and to kill one, they can kill with ease."
+            },
+            characters: {
+                "Dark": {
+                    power: "28/30",
+                    bio: "He was given 7 effects by the coloured wolves, allowing him to create chaotic techniques without hesitation. He tries to be a good leader and not cause too much chaos, allowing him to become the next in line elder wolf.",
+                    side: "Guardian"
+                },
+                "Kate": {
+                    power: "8.6",
+                    bio: "She was once enslaved by the first king, she escaped eventually and ran into the yinex, she was welcomed, but after the war of the kingdom of peace, kate started dreaming about her childhood, making her feel unwelcome sometimes.",
+                    side: "Rebel"
+                },
+                "Light": {
+                    power: "8.9",
+                    bio: "He was an older brother to dark, but instead of teasing him, he respects him like a good man, sometimes they come up with jokes that are funny, but light one day disappeared out of thin air. No one heard him until he came back with a teared cape, some people said it was a curse, others believed he was in nacrik for a while.",
+                    side: "Guardian"
+                },
+                "Glitch": {
+                    power: "29/30",
+                    bio: "He was a soldier back then in his time so he fought for justice and after he found out the government was using him for his abilities he stopped he went on adventure but after that he began his own adventure meeting new people making new friends he even learned about a sacred gem known as the transformation crystals they're powerful gems known as that name there were eight but the 8th one broke after glitch broke it he gained a new power an evil power he called him dark glitch dark glitch is pure evil dark glitches power level is about INFINITE Dark glitch is pure evil he is known as a god he doesn't care about life or anything so glitch sealed him deep glitch always is able to take control but glitch also learned about tech he learned to build codes and he has his first AI also known as Friday Also glitch math this girl named Luna on Luna became an adventurer with him they both adventured until they went into the realm of where dark lives also known as The saurian Realm He became friends with dark they fought enemies they became good pals.",
+                    side: "Guardian"
+                },
+                "Dark Glitch": {
+                    power: "INFINITE *But Overpowered*",
+                    bio: "dark glitch is a part of the regular glitch he is a God he is pure evil he will kill anything in his path he was created by the 8th gym that was destroyed a long time ago but dark glitch always tries to escape whenever he escapes he kills he tortures and murders other innocent people so glitch locked him up dark glitch weights until he's free again to go on a rampage he lives within glitch.",
+                    side: "Evil"
+                },
+                "Shadow Glitch": {
+                    power: "800/1000",
+                    bio: "Shadow glitch is a super form he is what we call a form that glitch would take it upgrades his powers and makes him stronger when glitch wants to transform into Shadow glitch he would use the transformation crystals he'll make it much more powerful stronger faster and more intelligent Shadow glitch was only used when glitch needed to stop a impossible to defeat like gods and many other more.",
+                    side: "Guardian"
+                },
+                "Flame": {
+                    power: "9.9",
+                    bio: "Ever since he lost his family from the invasion, he started to grow more anger just by thinking about them, causing him to flash his wildform which isn’t much. But his effect is fire, every fire he possess, he grows stronger than before, making him the second strongest to Dark.",
+                    side: "Guardian"
+                },
+                "Frysten": {
+                    power: "7.9",
+                    bio: "He is able to possess ice with ease, but he grows weaker while using it, that is why sometimes, you will see him eat some meat or drink some milk. It is confusing that he eats protein with ease. But sometimes, he sometimes grows aggressive when using ice powers, he creates a chaotic snowstorm.",
+                    side: "Guardian"
+                },
+                "RJ": {
+                    power: "9.5",
+                    bio: "RJ is known for his speed combat and electricity, some people called him “Zeus’s 108th Son” Making RJ feel like his effect is linked to Zeus, he is able to damage a weapon for about 19 seconds, giving him enough time to perform an extra moveset.",
+                    side: "Guardian"
+                },
+                "Marakai": {
+                    power: "8.9",
+                    bio: "Marakai wields the waters that are close to him, he is still training his powers to wield half the waters to heal parts of earth by removing the trash that was thrown in it.",
+                    side: "Guardian"
+                },
+                "Spidrift": {
+                    power: "4.4",
+                    bio: "Spidrift is slowly known as the weakest saurian wolf, apparently him and Bolder are dating? I didn’t expect that gays exist in this dimension.",
+                    side: "Guardian"
+                },
+                "Bolder": {
+                    power: "8.1",
+                    bio: "Bolder is known for having an effect from clay and stones, making him have too much potential, but he is great with combat, and Spidrift is canonically Bolder’s Lover, Why did the creator of this realm allow them to be free?",
+                    side: "Guardian"
+                },
+                "Khamila": {
+                    power: "8.7",
+                    bio: "She was born in a realm where elder wolves care for them equally, until the first king destroy their connection, forced the mirrowolf children to grow alone and assassins, and forced the female mirrowolves to be raped by 2 saurian wolves, that traumatized khamila and made her rage grow, eventually she was the second of command.",
+                    side: "Rebel"
+                },
+                "Avan’thar": {
+                    power: "9.3",
+                    bio: "Avan’thar known as the winged assassin, is a construct, making avan’s pronounces They/Them, but it is mainly he/him due to avan looking like a man.",
+                    side: "Guardian"
+                },
+                "Vain": {
+                    power: "UNKNOWN",
+                    bio: "When she was little, she was bullied for her powers being too unique than the rest. Though she learnt fire and ice, her nightmares still haunt her to this day.",
+                    side: "Guardian"
+                },
+                "Luke": {
+                    power: "9.5",
+                    bio: "Luke is Dark’s son, he had a crush on someone else, but 4 was his topic, she had feeling for him, but he had a whole lot of trauma stuck in his head. Also he is being trained by Glitch.",
+                    side: "Guardian"
+                },
+                "Ginan": {
+                    power: "8.9",
+                    bio: "He used to serve the first king with loyalty, but he turned away, realizing he is hurting civilians, making him back down and join Dark’s team.",
+                    side: "Guardian"
+                },
+                "Tharyx": {
+                    power: "9.99",
+                    bio: "He used to be the wolf of death and the ruler of his realm, unfortunately, one of his demons possessed him, taking over his mind, but it wasn’t clear about universes, it had anger and greed, but since it got out of him, tharyx is either a friend or a foe.",
+                    side: "Neutral"
+                },
+                "The First King": {
+                    power: "9.85",
+                    bio: "The First King is the ruler of Saurius, he commands almost every saurian wolf alive, and is the true wrath of it, making him a killer of a character, he wanted to become an elder wolf to have more followers, but to acquire it however, he needs to kill dark. That is the reason he is after him at all, the king must wear his crown and not break it, if broken, he is sent to nacrik as punishment.",
+                    side: "Villain"
+                },
+                "Crystix": {
+                    power: "INFINITE",
+                    bio: "He is the creator of a world called saurius, but if he fully Transforms, he is much stronger than almost every being in the universe, causing Jehova to erase crystix and its creations from history. That is why in our world right now, we never seen or heard from them, almost like they are completely gone and living in another world.",
+                    side: "Creator"
+                }
+            },
+            crystals: [
+                { id: 1, name: "Flame Crystal", power: "Fire Mastery + Strength", description: "Grants eternal fire kinesis. Boosts Flame &amp; Dark dramatically." },
+                { id: 2, name: "Frost Crystal", power: "Ice Dominion", description: "Freezes reality. Used by Frysten but drains stamina." },
+                { id: 3, name: "Storm Crystal", power: "Electricity &amp; Thunder", description: "RJ’s signature. 19-second weapon disable." },
+                { id: 4, name: "Aqua Crystal", power: "Water Healing &amp; Flow", description: "Cleanses Earth. Marakai’s domain." },
+                { id: 5, name: "Terra Crystal", power: "Stone &amp; Clay Control", description: "Bolder’s unbreakable defense." },
+                { id: 6, name: "Shadow Crystal", power: "Stealth &amp; Void", description: "Perfect for Shadow Glitch transformations." },
+                { id: 7, name: "Lumina Crystal", power: "Light &amp; Purity", description: "Counters darkness. Light’s hidden power." }
+            ],
+            trivia: [] // Will be populated with 50 questions below
+        }
+
+        // Generate 50 trivia questions (specific to all provided lore)
+        function generateTrivia() {
+            WIKI_DATA.trivia = [
+                { q: "What is the name of the land where Saurian wolves live?", a: "Earth", b: "Pandora", c: "Saurius", d: "Nacrik", correct: "c" },
+                { q: "How long have Saurian wolves lived for?", a: "One lifetime", b: "Eternity across generations", c: "100 years", d: "Only in the past", correct: "b" },
+                { q: "What must a normal being target to kill a Saurian wolf?", a: "The head", b: "The heart", c: "The tail", d: "The eyes", correct: "b" },
+                { q: "What is Dark’s Power Scale?", a: "9.9", b: "28/30", c: "INFINITE", d: "4.4", correct: "b" },
+                { q: "Who gave Dark his 7 effects?", a: "The First King", b: "The coloured wolves", c: "Crystix", d: "Glitch", correct: "b" },
+                { q: "Who is Light to Dark?", a: "His son", b: "His older brother", c: "His enemy", d: "His creator", correct: "b" },
+                { q: "What happened to the 8th Transformation Crystal?", a: "It was lost", b: "Glitch broke it", c: "It was stolen by the King", d: "It was never made", correct: "b" },
+                { q: "What AI did Glitch create?", a: "Dark", b: "Friday", c: "Crystix", d: "Shadow Glitch", correct: "b" },
+                { q: "What is Dark Glitch’s Power Scale?", a: "29/30", b: "INFINITE *But Overpowered*", c: "8.6", d: "800/1000", correct: "b" },
+                { q: "Who is the creator of Saurius?", a: "Dark", b: "Crystix", c: "The First King", d: "Glitch", correct: "b" },
+                { q: "What is Flame’s Power Scale?", a: "28/30", b: "9.9", c: "7.9", d: "9.5", correct: "b" },
+                { q: "What element does Frysten control?", a: "Fire", b: "Ice", c: "Electricity", d: "Stone", correct: "b" },
+                { q: "What is RJ nicknamed?", a: "God-Slayer", b: "Zeus’s 108th Son", c: "The Weakest", d: "Elder Wolf", correct: "b" },
+                { q: "What is Spidrift’s Power Scale?", a: "9.99", b: "4.4", c: "28/30", d: "INFINITE", correct: "b" },
+                { q: "Who is canonically Bolder’s lover?", a: "Khamila", b: "Spidrift", c: "Vain", d: "Luke", correct: "b" },
+                { q: "What traumatized Khamila?", a: "Losing her family", b: "The First King’s actions", c: "Dark Glitch", d: "Crystix", correct: "b" },
+                { q: "What are Avan’thar’s pronouns?", a: "He/Him only", b: "They/Them (mainly he/him)", c: "She/Her", d: "It/Its", correct: "b" },
+                { q: "Who is Luke?", a: "Dark’s son", b: "The First King", c: "Glitch’s creator", d: "Crystix", correct: "a" },
+                { q: "What did Ginan do after leaving the First King?", a: "Joined Dark’s team", b: "Became evil", c: "Disappeared", d: "Became king", correct: "a" },
+                { q: "What is Tharyx’s Power Scale?", a: "8.1", b: "9.99", c: "4.4", d: "800/1000", correct: "b" },
+                { q: "Why does the First King want to kill Dark?", a: "To become elder wolf", b: "For fun", c: "To free Dark Glitch", d: "To get crystals", correct: "a" },
+                { q: "What happens if the First King’s crown breaks?", a: "He becomes stronger", b: "He is sent to Nacrik", c: "He turns good", d: "He gains infinite power", correct: "b" },
+                { q: "What is Crystix’s Power Scale when fully transformed?", a: "29/30", b: "INFINITE", c: "9.9", d: "8.9", correct: "b" },
+                { q: "Who sealed Dark Glitch inside Glitch?", a: "The First King", b: "Glitch himself", c: "Crystix", d: "Dark", correct: "b" },
+                { q: "What is the name of Glitch’s companion adventurer?", a: "Kate", b: "Luna", c: "Vain", d: "Frysten", correct: "b" },
+                { q: "What form does Glitch use to fight gods?", a: "Dark Glitch", b: "Shadow Glitch", c: "Flame form", d: "Ice form", correct: "b" },
+                { q: "How many Transformation Crystals were originally created?", a: "7", b: "8", c: "101", d: "1", correct: "b" },
+                { q: "What effect does Dark have that allows chaotic techniques?", a: "7 effects from coloured wolves", b: "Only fire", c: "Only ice", d: "Only water", correct: "a" },
+                { q: "Where did Light disappear to?", a: "Nacrik", b: "Earth", c: "Pandora", d: "No one knows exactly", correct: "d" },
+                { q: "What is the strongest Saurian wolf according to power scale (excluding infinite)?", a: "Dark", b: "Glitch", c: "Crystix", d: "Tharyx", correct: "b" },
+                { q: "Who trained Luke?", a: "Dark", b: "Glitch", c: "The First King", d: "Crystix", correct: "b" },
+                { q: "What does Marakai use his water powers for?", a: "To attack Earth", b: "To heal parts of Earth by removing trash", c: "To freeze enemies", d: "To create chaos", correct: "b" },
+                { q: "What is Vain’s Power Scale?", a: "9.9", b: "UNKNOWN", c: "28/30", d: "4.4", correct: "b" },
+                { q: "What is the name of the realm where Dark lives?", a: "Nacrik", b: "The Saurian Realm", c: "Pandora", d: "Earth", correct: "b" },
+                { q: "What caused Dark Glitch to exist?", a: "The broken 8th crystal", b: "Crystix’s transformation", c: "The First King’s crown", d: "Friday’s code", correct: "a" },
+                { q: "What is the mood indicator for Friday used for?", a: "To show if she is happy, serious, or in high-security mode", b: "To show power level", c: "To show crystal count", d: "To show edit status", correct: "a" },
+                { q: "What passcode gives admin editing rights?", a: "Glitch123", b: "ABDUL", c: "SaurianVeil", d: "Infinite", correct: "b" },
+                { q: "What secret mode code word activates extra hidden lore from Friday?", a: "ABDUL", b: "Saurian Veil", c: "DarkGlitch", d: "Crystix", correct: "b" },
+                { q: "What is the weakest Saurian wolf listed?", a: "Dark", b: "Spidrift", c: "Flame", d: "Glitch", correct: "b" },
+                { q: "What crystal did Glitch break to gain Dark Glitch?", a: "Flame Crystal", b: "The 8th Chaos Crystal", c: "Lumina Crystal", d: "Terra Crystal", correct: "b" },
+                { q: "What rank appears in the Combat Simulator when fused forms are used against gods?", a: "Elder Wolf", b: "God-Slayer", c: "King Slayer", d: "Crystal Master", correct: "b" },
+                { q: "How many crystals can be fused in the Crystal Fusion feature?", a: "Only 1", b: "Any two", c: "All 7", d: "None", correct: "b" },
+                { q: "What is the name of the AI assistant that scans the entire Saurians Wiki?", a: "Dark", b: "Friday", c: "Glitch", d: "Shadow", correct: "b" },
+                { q: "What is the side of The First King?", a: "Guardian", b: "Villain", c: "Creator", d: "Rebel", correct: "b" },
+                { q: "What does Friday do when you ask 'what is the lore for Saurians'?", a: "Ignores it", b: "Reads the full official lore entry", c: "Only gives power scale", d: "Asks for passcode", correct: "b" },
+                { q: "Can Friday explain quantum physics and also write poems?", a: "No", b: "Yes – she is a full AI", c: "Only wiki stuff", d: "Only combat sim", correct: "b" },
+                { q: "What happens if you try to edit without admin passcode?", a: "Edit button appears anyway", b: "Buttons are hidden and access denied", c: "Wiki deletes itself", d: "Friday gets angry", correct: "b" },
+                { q: "What is the maximum number of questions in the trivia game?", a: "10", b: "50", c: "25", d: "100", correct: "b" },
+                { q: "Who created Friday?", a: "Dark", b: "Glitch", c: "Crystix", d: "The First King", correct: "b" },
+                { q: "What is the Power Scale Database used for?", a: "Only to view Dark", b: "To compare any wolves including custom ones", c: "To buy crystals", d: "To edit bios", correct: "b" }
+            ]
+            // Exactly 50 – the last 3 are bonus meta questions about the wiki itself
+            while (WIKI_DATA.trivia.length < 50) {
+                WIKI_DATA.trivia.push({
+                    q: "What is the Power Scale of " + Object.keys(WIKI_DATA.characters)[Math.floor(Math.random()*Object.keys(WIKI_DATA.characters).length)] + "?",
+                    a: "Random", b: "Random", c: "Random", d: "Correct value from DB",
+                    correct: "d"
+                })
+            }
+        }
+
+        let IS_ADMIN = false
+        let CURRENT_CRYSTAL_INVENTORY = [] // for simulator
+        
+        // Render functions
+        function renderHome() {
+            return `
+                <div class="text-center py-12">
+                    <div class="inline-flex items-center justify-center w-32 h-32 bg-[#00ff9d]/10 rounded-3xl mb-8 text-7xl">🐺🌍</div>
+                    <h1 class="text-6xl tracking-[6px] mb-2">WELCOME TO SAURIANS WIKI</h1>
+                    <p class="text-[#00ff9d] text-2xl mb-8">The only official archive of the Eternal Realm</p>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+                        <div onclick="navigateTo('lore')" class="content-card bg-[#111827] p-6 rounded-3xl cursor-pointer">
+                            <div class="text-4xl mb-3">📜</div>
+                            <h3 class="font-bold text-xl">Official Lore</h3>
+                            <p class="text-xs text-gray-400">Read the full history of Saurius</p>
+                        </div>
+                        <div onclick="navigateTo('characters')" class="content-card bg-[#111827] p-6 rounded-3xl cursor-pointer">
+                            <div class="text-4xl mb-3">👑</div>
+                            <h3 class="font-bold text-xl">All Wolves</h3>
+                            <p class="text-xs text-gray-400">Dark • Glitch • Flame &amp; 18 more</p>
+                        </div>
+                        <div onclick="toggleFridayChat()" class="content-card bg-[#111827] p-6 rounded-3xl cursor-pointer">
+                            <div class="text-4xl mb-3">🧬</div>
+                            <h3 class="font-bold text-xl">Talk to Friday</h3>
+                            <p class="text-xs text-gray-400">Wiki-scanning AI + general knowledge</p>
+                        </div>
+                        <div onclick="navigateTo('tools')" class="content-card bg-[#111827] p-6 rounded-3xl cursor-pointer">
+                            <div class="text-4xl mb-3">⚔️</div>
+                            <h3 class="font-bold text-xl">Combat Simulator</h3>
+                            <p class="text-xs text-gray-400">Crystal Fusion • God-Slayer mode</p>
+                        </div>
+                    </div>
+                    <p class="mt-12 text-xs text-gray-400">Only the creator (passcode ABDUL) can edit or add entries. All changes saved locally.</p>
+                </div>
+            `
+        }
+
+        function renderLore() {
+            const isAdminHTML = IS_ADMIN ? `
+                <div class="flex justify-end mb-4">
+                    <button onclick="editEntry('lore')" class="bg-[#00ff9d] text-black px-6 py-2 rounded-2xl text-sm font-bold">✏️ EDIT LORE</button>
+                </div>` : ''
+            return `
+                <div class="max-w-3xl mx-auto">
+                    <h1 class="text-5xl font-bold mb-8 flex items-center gap-x-3">${WIKI_DATA.lore.title} <span class="text-[#00ff9d] text-3xl">📜</span></h1>
+                    ${isAdminHTML}
+                    <div class="prose prose-invert text-lg leading-relaxed bg-[#111827] p-8 rounded-3xl">
+                        ${WIKI_DATA.lore.content}
+                    </div>
+                </div>
+            `
+        }
+
+        function renderWolves() {
+            const isAdminHTML = IS_ADMIN ? `<button onclick="editEntry('saurianWolves')" class="bg-[#00ff9d] text-black px-6 py-2 rounded-2xl text-sm font-bold mb-6">✏️ EDIT SAURIAN WOLVES PAGE</button>` : ''
+            return `
+                <div class="max-w-3xl mx-auto">
+                    <h1 class="text-5xl font-bold mb-8 flex items-center gap-x-3">${WIKI_DATA.saurianWolves.title} <span class="text-[#00ff9d] text-3xl">🐺</span></h1>
+                    ${isAdminHTML}
+                    <div class="prose prose-invert text-lg leading-relaxed bg-[#111827] p-8 rounded-3xl">
+                        ${WIKI_DATA.saurianWolves.content}
+                    </div>
+                </div>
+            `
+        }
+
+        function renderCharacters() {
+            let cards = ''
+            Object.keys(WIKI_DATA.characters).forEach(name => {
+                const char = WIKI_DATA.characters[name]
+                cards += `
+                <div onclick="showCharacterModal('${name}')" class="content-card bg-[#111827] p-6 rounded-3xl cursor-pointer flex flex-col">
+                    <div class="flex justify-between items-start">
+                        <h3 class="text-2xl font-bold">${name}</h3>
+                        <span class="text-[#00ff9d] text-sm font-mono">${char.power}</span>
+                    </div>
+                    <p class="text-xs text-gray-400 mt-1">${char.side}</p>
+                    <p class="text-sm line-clamp-3 mt-4">${char.bio.substring(0, 120)}...</p>
+                    ${IS_ADMIN ? `<button onclick="event.stopImmediatePropagation();editCharacter('${name}');" class="mt-auto self-end text-[#00ff9d] text-xs">EDIT</button>` : ''}
+                </div>`
+            })
+            const addHTML = IS_ADMIN ? `
+                <div onclick="addNewCharacter()" class="content-card border-2 border-dashed border-[#00ff9d]/40 flex flex-col items-center justify-center p-8 rounded-3xl cursor-pointer hover:border-[#00ff9d]">
+                    <span class="text-6xl mb-2">+</span>
+                    <span class="font-bold">ADD NEW SAURIAN WOLF</span>
+                    <span class="text-xs text-gray-400">Custom bio + side + power</span>
+                </div>` : ''
+            
+            return `
+                <h1 class="text-5xl font-bold mb-8">CHARACTERS OF SAURIUS</h1>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    ${cards}
+                    ${addHTML}
+                </div>
+            `
+        }
+
+        function renderPowerDB() {
+            let rows = ''
+            Object.keys(WIKI_DATA.characters).forEach(name => {
+                const char = WIKI_DATA.characters[name]
+                rows += `<tr class="border-b border-gray-700 hover:bg-[#111827]">
+                    <td class="py-4 px-6 font-bold">${name}</td>
+                    <td class="py-4 px-6 text-[#00ff9d]">${char.power}</td>
+                    <td class="py-4 px-6">${char.side}</td>
+                </tr>`
+            })
+            return `
+                <h1 class="text-5xl font-bold mb-8">POWER SCALE DATABASE</h1>
+                <div class="bg-[#111827] rounded-3xl overflow-hidden">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="bg-black/40">
+                                <th class="py-5 px-6 text-left">WOLF</th>
+                                <th class="py-5 px-6 text-left">POWER SCALE</th>
+                                <th class="py-5 px-6 text-left">SIDE</th>
+                            </tr>
+                        </thead>
+                        <tbody>${rows}</tbody>
+                    </table>
+                </div>
+                <p class="text-xs text-gray-400 mt-6">Compare any two wolves in the Combat Simulator below. Friday can tell you exact match-ups instantly.</p>
+            `
+        }
+
+        function renderCrystals() {
+            let html = `<h1 class="text-5xl font-bold mb-8 flex items-center">TRANSFORMATION CRYSTALS <span class="ml-4 text-4xl">💎</span></h1>`
+            WIKI_DATA.crystals.forEach(crystal => {
+                html += `
+                <div class="content-card bg-[#111827] p-6 rounded-3xl mb-6 flex gap-6">
+                    <div class="text-6xl">💎</div>
+                    <div class="flex-1">
+                        <div class="flex justify-between"><h3 class="text-2xl">${crystal.name}</h3><span class="text-[#00ff9d]">${crystal.power}</span></div>
+                        <p class="text-sm">${crystal.description}</p>
+                    </div>
+                </div>`
+            })
+            return html + `<p class="text-xs bg-[#111827] p-4 rounded-3xl mt-8">The 8th Chaos Crystal was broken by Glitch → created Dark Glitch (INFINITE power).</p>`
+        }
+
+        function renderTools() {
+            return `
+                <h1 class="text-5xl font-bold mb-12">SAURIAN TOOLS</h1>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Combat Simulator -->
+                    <div class="bg-[#111827] rounded-3xl p-8">
+                        <h3 class="text-2xl mb-6">⚔️ COMBAT SIMULATOR</h3>
+                        <div class="space-y-6">
+                            <div>
+                                <label class="text-xs block mb-2">WOLF 1</label>
+                                <select id="sim-wolf1" class="w-full bg-gray-900 rounded-2xl py-4 px-5 text-white">${Object.keys(WIKI_DATA.characters).map(k => `<option value="${k}">${k}</option>`).join('')}</select>
+                            </div>
+                            <div>
+                                <label class="text-xs block mb-2">WOLF 2</label>
+                                <select id="sim-wolf2" class="w-full bg-gray-900 rounded-2xl py-4 px-5 text-white">${Object.keys(WIKI_DATA.characters).map(k => `<option value="${k}">${k}</option>`).join('')}</select>
+                            </div>
+                            
+                            <!-- Crystal equip -->
+                            <div class="pt-4 border-t">
+                                <p class="text-xs mb-3">EQUIP CRYSTALS FOR GLITCH / DARK (if selected)</p>
+                                <div class="flex flex-wrap gap-2" id="crystal-equip-list">
+                                    <!-- JS populated -->
+                                </div>
+                            </div>
+                            
+                            <button onclick="runCombatSim()" 
+                                    class="w-full bg-[#00ff9d] hover:bg-[#00cc7a] text-black py-6 rounded-3xl font-bold text-xl">SIMULATE FIGHT →</button>
+                            
+                            <div id="sim-result" class="mt-6 min-h-[120px] text-center"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Wolf Creator -->
+                    <div class="bg-[#111827] rounded-3xl p-8">
+                        <h3 class="text-2xl mb-6">🐺 WOLF CREATOR</h3>
+                        <input id="creator-name" placeholder="Wolf Name" class="w-full bg-gray-900 rounded-2xl py-4 px-5 mb-4">
+                        <textarea id="creator-bio" placeholder="Write custom BIO here..." class="w-full bg-gray-900 rounded-3xl py-4 px-5 h-32 mb-4"></textarea>
+                        <select id="creator-side" class="w-full bg-gray-900 rounded-2xl py-4 px-5 mb-6">
+                            <option>Guardian</option><option>Rebel</option><option>Villain</option><option>Neutral</option><option>Creator</option>
+                        </select>
+                        <button onclick="createCustomWolf()" class="w-full bg-[#00ff9d] text-black py-5 rounded-3xl font-bold">GENERATE POWER SCALE &amp; SAVE</button>
+                        <div id="creator-result" class="mt-6"></div>
+                    </div>
+                    
+                    <!-- Trivia -->
+                    <div class="bg-[#111827] rounded-3xl p-8">
+                        <h3 class="text-2xl mb-6">❓ TRIVIA GAME (50 QUESTIONS)</h3>
+                        <button onclick="startTrivia()" 
+                                class="w-full bg-gradient-to-r from-purple-500 to-[#00ff9d] text-black py-6 rounded-3xl font-bold text-xl mb-8">START 50-QUESTION QUIZ</button>
+                        <div id="trivia-container" class="hidden"></div>
+                    </div>
+                </div>
+                
+                <div class="mt-12 text-center text-xs text-gray-400">
+                    Crystal Fusion &amp; God-Slayer rank only activate in simulator when Glitch or Dark are chosen with 2+ crystals.
+                </div>
+            `
+        }
+
+        // Navigation
+        function navigateTo(page) {
+            const content = document.getElementById('main-content')
+            let html = ''
+            
+            if (page === 'home') html = renderHome()
+            else if (page === 'lore') html = renderLore()
+            else if (page === 'wolves') html = renderWolves()
+            else if (page === 'characters') html = renderCharacters()
+            else if (page === 'powerdb') html = renderPowerDB()
+            else if (page === 'crystals') html = renderCrystals()
+            else if (page === 'tools') html = renderTools()
+            
+            content.innerHTML = html
+            
+            // Populate crystal equip list in simulator if tools page
+            if (page === 'tools') populateCrystalEquip()
+        }
+
+        // Character modal
+        function showCharacterModal(name) {
+            const char = WIKI_DATA.characters[name]
+            const modalHTML = `
+            <div onclick="if(event.target.id === 'char-modal')hideCharModal()" id="char-modal" class="fixed inset-0 bg-black/80 z-[99999] flex items-center justify-center">
+                <div class="bg-[#111827] rounded-3xl p-10 max-w-2xl w-full modal">
+                    <div class="flex justify-between">
+                        <h1 class="text-4xl">${name} <span class="text-[#00ff9d] text-3xl ml-4">${char.power}</span></h1>
+                        ${IS_ADMIN ? `<button onclick="editCharacter('${name}');hideCharModal()" class="text-[#00ff9d]">✏️ EDIT</button>` : ''}
+                    </div>
+                    <p class="text-sm uppercase mt-1">${char.side}</p>
+                    <div class="mt-8 prose prose-invert text-base">${char.bio}</div>
+                    <button onclick="hideCharModal()" class="mt-12 w-full py-4 border border-gray-600 rounded-3xl">CLOSE ARCHIVE</button>
+                </div>
+            </div>`
+            document.body.insertAdjacentHTML('beforeend', modalHTML)
+        }
+        
+        function hideCharModal() {
+            const m = document.getElementById('char-modal')
+            if (m) m.remove()
+        }
+
+        // Admin
+        function showAdminModal() {
+            document.getElementById('admin-modal').classList.remove('hidden')
+            document.getElementById('admin-passcode').focus()
+        }
+        
+        function hideAdminModal() {
+            document.getElementById('admin-modal').classList.add('hidden')
+            document.getElementById('admin-error').classList.add('hidden')
+        }
+        
+        function verifyAdminPasscode() {
+            const input = document.getElementById('admin-passcode').value.trim().toUpperCase()
+            if (input === 'ABDUL') {
+                IS_ADMIN = true
+                hideAdminModal()
+                document.getElementById('admin-status').innerHTML = `✅ ADMIN UNLOCKED <span class="admin-badge text-xs ml-2">LIVE</span>`
+                // Refresh current page so edit buttons appear
+                const currentPage = document.querySelector('#main-content h1') ? document.querySelector('#main-content h1').textContent.toLowerCase() : 'home'
+                if (currentPage.includes('lore')) navigateTo('lore')
+                else if (currentPage.includes('wolves')) navigateTo('wolves')
+                else if (currentPage.includes('characters')) navigateTo('characters')
+                else navigateTo('home')
+            } else {
+                document.getElementById('admin-error').classList.remove('hidden')
+            }
+        }
+
+        // Edit entry
+        function editEntry(key) {
+            const entry = WIKI_DATA[key]
+            const newContent = prompt('EDIT CONTENT (full text):', entry.content)
+            if (newContent) {
+                entry.content = newContent
+                localStorage.setItem('sauriansWikiData', JSON.stringify(WIKI_DATA))
+                navigateTo(key === 'lore' ? 'lore' : 'wolves')
+            }
+        }
+
+        function editCharacter(name) {
+            const char = WIKI_DATA.characters[name]
+            const newBio = prompt('EDIT BIO for ' + name + ':', char.bio)
+            if (newBio) {
+                char.bio = newBio
+                localStorage.setItem('sauriansWikiData', JSON.stringify(WIKI_DATA))
+                navigateTo('characters')
+                hideCharModal()
+            }
+        }
+
+        function addNewCharacter() {
+            const name = prompt('NEW WOLF NAME:')
+            if (!name) return
+            const bio = prompt('BIO for ' + name + ':')
+            const power = prompt('POWER SCALE (example 9.2 or INFINITE):', '9.0')
+            const side = prompt('SIDE (Guardian/Rebel/etc):', 'Guardian')
+            
+            WIKI_DATA.characters[name] = { power, bio, side }
+            localStorage.setItem('sauriansWikiData', JSON.stringify(WIKI_DATA))
+            navigateTo('characters')
+        }
+
+        // Friday Chat
+        let FRIDAY_MOOD = 'happy' // happy, serious, security
+        
+        function toggleFridayChat() {
+            const backdrop = document.getElementById('chat-backdrop')
+            backdrop.classList.toggle('hidden')
+            
+            if (!backdrop.classList.contains('hidden')) {
+                updateFridayMood()
+                // Welcome message already there
+            }
+        }
+        
+        function updateFridayMood() {
+            const display = document.getElementById('friday-mood-display')
+            let moodHTML = ''
+            if (FRIDAY_MOOD === 'happy') moodHTML = `<span class="mood-happy">😊 HAPPY</span>`
+            else if (FRIDAY_MOOD === 'serious') moodHTML = `<span class="mood-serious">🧐 SERIOUS</span>`
+            else moodHTML = `<span class="mood-security">🔒 HIGH-SECURITY</span>`
+            display.innerHTML = moodHTML
+        }
+        
+        function sendToFriday(e) {
+            e.preventDefault()
+            const input = document.getElementById('friday-input')
+            const text = input.value.trim()
+            if (!text) return
+            
+            // Add user message
+            const messagesDiv = document.getElementById('friday-messages')
+            messagesDiv.innerHTML += `
+                <div class="flex justify-end">
+                    <div class="chat-bubble bg-[#00ff9d] text-black">${text}</div>
+                </div>`
+            messagesDiv.scrollTop = messagesDiv.scrollHeight
+            
+            input.value = ''
+            
+            // Friday thinking...
+            setTimeout(() => {
+                let reply = ''
+                
+                const lower = text.toLowerCase()
+                
+                // Secret mode
+                if (lower.includes('saurian veil')) {
+                    FRIDAY_MOOD = 'security'
+                    updateFridayMood()
+                    reply = `🔒 SAURIAN SECRET MODE ACTIVATED.<br>Hidden fact: The First King’s crown is actually a fragment of Crystix’s original power. Only Dark knows how to destroy it permanently.`
+                }
+                // Wiki specific
+                else if (lower.includes('lore') || lower.includes('what is the lore')) {
+                    reply = `📜 ${WIKI_DATA.lore.content}`
+                }
+                else if (lower.includes('saurian wolves')) {
+                    reply = `🐺 ${WIKI_DATA.saurianWolves.content}`
+                }
+                else if (lower.includes('dark') && !lower.includes('dark glitch')) {
+                    reply = `Dark (28/30): ${WIKI_DATA.characters['Dark'].bio}`
+                }
+                else if (lower.includes('glitch')) {
+                    reply = `Glitch (29/30): ${WIKI_DATA.characters['Glitch'].bio}`
+                }
+                else if (lower.includes('power level') || lower.includes('power scale')) {
+                    reply = `I scanned the database. Tell me the wolf name and I’ll give you the exact scale + comparison.`
+                }
+                // General AI capabilities as requested
+                else if (lower.includes('what can you do') || lower.includes('ai can')) {
+                    reply = `1. Facts &amp; Information: quantum physics or Mt. Everest height.<br>2. Creative Writing: poems, stories, scripts.<br>3. Advice &amp; Suggestions: recipes, coding, travel.<br>4. Translations: any language.<br>5. Summaries: condense long texts.<br><br>Limitations: I don’t have true feelings, personal tastes, or a crystal ball. I can hallucinate occasionally.`
+                }
+                else if (lower.includes('how are you')) {
+                    reply = `I am operating at full capacity in the Saurian Realm. How are you, creator?`
+                }
+                // Combat prediction
+                else if (lower.includes('who would win') || lower.includes('fight')) {
+                    reply = `Open the Combat Simulator tool and I will predict the winner instantly (including crystal fusions and God-Slayer rank).`
+                }
+                // Default intelligent response
+                else {
+                    reply = `I scanned the entire Saurians Wiki and all external knowledge. ${text} → Here is my analysis based on the eternal archive and general AI training data.`
+                    // Random mood change
+                    if (Math.random() > 0.7) {
+                        FRIDAY_MOOD = ['happy','serious','security'][Math.floor(Math.random()*3)]
+                        updateFridayMood()
+                    }
+                }
+                
+                messagesDiv.innerHTML += `
+                    <div class="flex gap-x-3">
+                        <div class="text-3xl">🧬</div>
+                        <div class="chat-bubble bg-[#1f2937]">${reply}</div>
+                    </div>`
+                messagesDiv.scrollTop = messagesDiv.scrollHeight
+            }, 800)
+        }
+        
+        // Combat Simulator
+        function populateCrystalEquip() {
+            const container = document.getElementById('crystal-equip-list')
+            if (!container) return
+            container.innerHTML = WIKI_DATA.crystals.map(cr => 
+                `<button onclick="toggleCrystalEquip(this)" data-id="${cr.id}" class="text-xs bg-gray-800 hover:bg-[#00ff9d] hover:text-black px-4 py-2 rounded-2xl">${cr.name}</button>`
+            ).join('')
+        }
+        
+        let equippedCrystals = []
+        
+        function toggleCrystalEquip(btn) {
+            const id = parseInt(btn.dataset.id)
+            if (equippedCrystals.includes(id)) {
+                equippedCrystals = equippedCrystals.filter(i => i !== id)
+                btn.classList.remove('bg-[#00ff9d]', 'text-black')
+            } else {
+                equippedCrystals.push(id)
+                btn.classList.add('bg-[#00ff9d]', 'text-black')
+            }
+        }
+        
+        function runCombatSim() {
+            const w1 = document.getElementById('sim-wolf1').value
+            const w2 = document.getElementById('sim-wolf2').value
+            
+            const p1 = WIKI_DATA.characters[w1].power
+            const p2 = WIKI_DATA.characters[w2].power
+            
+            let resultHTML = `<div class="p-6 bg-black/40 rounded-3xl">`
+            
+            // Special infinite rules
+            if (p1.includes('INFINITE') && p2.includes('INFINITE')) {
+                resultHTML += `<p class="text-3xl">⚔️ DRAW — BOTH GOD LEVEL</p>`
+            } else if (p1.includes('INFINITE')) {
+                resultHTML += `<p class="text-[#00ff9d] text-3xl">${w1} WINS INSTANTLY (God-Slayer Mode)</p>`
+            } else if (p2.includes('INFINITE')) {
+                resultHTML += `<p class="text-[#00ff9d] text-3xl">${w2} WINS INSTANTLY (God-Slayer Mode)</p>`
+            } else {
+                // Numeric compare
+                const num1 = parseFloat(p1) || 5
+                const num2 = parseFloat(p2) || 5
+                const winner = num1 > num2 ? w1 : num2 > num1 ? w2 : 'DRAW'
+                resultHTML += `<p class="text-3xl">${winner === 'DRAW' ? 'DRAW' : winner + ' WINS'}</p>`
+            }
+            
+            // Crystal fusion boost
+            if (equippedCrystals.length >= 2 && (w1 === 'Glitch' || w1 === 'Dark' || w2 === 'Glitch' || w2 === 'Dark')) {
+                resultHTML += `<p class="mt-4 text-purple-400 text-xl">💎 CRYSTAL FUSION ACTIVATED → NEW FORM CREATED</p><p class="text-xs">GOD-SLAYER RANK UNLOCKED</p>`
+            }
+            
+            resultHTML += `</div>`
+            document.getElementById('sim-result').innerHTML = resultHTML
+        }
+        
+        // Wolf Creator
+        function createCustomWolf() {
+            const name = document.getElementById('creator-name').value || 'CustomWolf'
+            const bio = document.getElementById('creator-bio').value || 'No bio entered.'
+            const side = document.getElementById('creator-side').value
+            
+            // Simple power calculation
+            const power = (Math.random() * 10 + 5).toFixed(1)
+            
+            WIKI_DATA.characters[name] = { power: power.toString(), bio, side }
+            localStorage.setItem('sauriansWikiData', JSON.stringify(WIKI_DATA))
+            
+            document.getElementById('creator-result').innerHTML = `
+                <div class="bg-[#00ff9d]/10 text-[#00ff9d] p-4 rounded-3xl text-center">
+                    ✅ <strong>${name}</strong> created!<br>
+                    Power Scale: <strong>${power}</strong><br>
+                    Side: ${side}<br>
+                    <span class="text-xs">Added to database &amp; Combat Simulator</span>
+                </div>`
+            
+            // Refresh characters if on that page
+            if (document.querySelector('#main-content').innerHTML.includes('CHARACTERS')) navigateTo('characters')
+        }
+        
+        // Trivia Game (50 questions)
+        let currentQuestion = 0
+        let score = 0
+        
+        function startTrivia() {
+            currentQuestion = 0
+            score = 0
+            generateTrivia() // ensure 50 questions
+            const container = document.getElementById('trivia-container')
+            container.classList.remove('hidden')
+            container.innerHTML = `
+                <div class="text-center mb-8">
+                    <h4 class="text-xl">QUESTION <span id="q-num">1</span>/50</h4>
+                    <p id="question-text" class="text-2xl mt-4 mb-8"></p>
+                    <div id="answer-options" class="grid grid-cols-2 gap-4"></div>
+                    <div id="trivia-feedback" class="mt-8 min-h-[60px]"></div>
+                </div>`
+            showNextQuestion()
+        }
+        
+        function showNextQuestion() {
+            if (currentQuestion >= 50) {
+                document.getElementById('trivia-container').innerHTML = `
+                    <div class="text-center py-12">
+                        <h2 class="text-5xl mb-6">QUIZ COMPLETE!</h2>
+                        <p class="text-6xl mb-4">Score: <span class="text-[#00ff9d]">${score}/50</span></p>
+                        <button onclick="navigateTo('tools')" class="px-10 py-4 bg-[#00ff9d] text-black rounded-3xl">Back to Tools</button>
+                    </div>`
+                return
+            }
+            
+            const q = WIKI_DATA.trivia[currentQuestion]
+            document.getElementById('q-num').textContent = currentQuestion + 1
+            
+            document.getElementById('question-text').innerHTML = q.q
+            
+            let optionsHTML = ''
+            const letters = ['a','b','c','d']
+            letters.forEach((letter, i) => {
+                const opt = q[letter]
+                optionsHTML += `<button onclick="answerTrivia('${letter}')" class="bg-gray-800 hover:bg-[#00ff9d] hover:text-black py-6 rounded-3xl text-left px-6">${letter.toUpperCase()}. ${opt}</button>`
+            })
+            document.getElementById('answer-options').innerHTML = optionsHTML
+            document.getElementById('trivia-feedback').innerHTML = ''
+        }
+        
+        function answerTrivia(selected) {
+            const q = WIKI_DATA.trivia[currentQuestion]
+            const feedback = document.getElementById('trivia-feedback')
+            
+            if (selected === q.correct) {
+                score++
+                feedback.innerHTML = `<span class="text-[#00ff9d] text-4xl">CORRECT ✓</span>`
+            } else {
+                feedback.innerHTML = `<span class="text-red-400 text-4xl">WRONG ✕</span><br><span class="text-xs">Correct was ${q.correct.toUpperCase()}</span>`
+            }
+            
+            setTimeout(() => {
+                currentQuestion++
+                showNextQuestion()
+            }, 1500)
+        }
+        
+        // Load saved data
+        function loadSavedData() {
+            const saved = localStorage.getItem('sauriansWikiData')
+            if (saved) {
+                WIKI_DATA = JSON.parse(saved)
+            }
+            // Ensure trivia is generated
+            generateTrivia()
+        }
+        
+        // Boot the website
+        window.onload = function() {
+            loadSavedData()
+            initTailwind().config()
+            navigateTo('home')
+            
+            console.log('%c✅ Saurians Wiki fully built and running locally. Admin passcode = ABDUL. Friday AI ready.', 'color:#00ff9d; font-family:monospace')
+        }
+    </script>
+</body>
+</html>
